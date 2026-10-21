@@ -1,0 +1,521 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#102b46">
+  <title>Hospital Admin | CardioCare AI</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    .admin-page {
+      min-height: 75vh;
+      padding: 55px 6%;
+      background: #f6f8f7;
+    }
+    .admin-container {
+      max-width: 1050px;
+      margin: 0 auto;
+    }
+    .admin-heading {
+      margin-bottom: 28px;
+    }
+    .admin-heading h1 {
+      margin: 12px 0 8px;
+      font-family: Manrope, sans-serif;
+      font-size: clamp(30px, 5vw, 44px);
+      letter-spacing: -1px;
+    }
+    .admin-heading p {
+      color: #718093;
+      font-size: 14px;
+    }
+    .admin-panel {
+      margin-bottom: 24px;
+      padding: 25px;
+      background: #fff;
+      border: 1px solid #e4e9ed;
+      border-radius: 17px;
+      box-shadow: 0 10px 30px rgba(16, 43, 70, .04);
+    }
+    .admin-panel h2 {
+      margin: 0 0 18px;
+      font-family: Manrope, sans-serif;
+      font-size: 21px;
+    }
+    .admin-form {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 4px 18px;
+    }
+    .admin-form .full {
+      grid-column: 1 / -1;
+    }
+    .admin-form button {
+      margin-top: 12px;
+    }
+    .admin-form label {
+      margin-top: 12px;
+    }
+    .admin-form input,
+    .admin-form select {
+      min-width: 0;
+    }
+    .admin-message {
+      min-height: 18px;
+      color: #178d87;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+    }
+    .admin-table-wrap {
+      width: 100%;
+      overflow-x: auto;
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .admin-table th,
+    .admin-table td {
+      padding: 13px 10px;
+      border-bottom: 1px solid #e8edef;
+      text-align: left;
+      white-space: nowrap;
+    }
+    .admin-table th {
+      color: #718093;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+    }
+    .admin-table select {
+      padding: 7px;
+      border: 1px solid #e4e9ed;
+      border-radius: 8px;
+      background: #fff;
+    }
+    .admin-muted {
+      color: #718093;
+      font-size: 13px;
+    }
+    .admin-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 24px;
+    }
+    .admin-topbar .brand {
+      font-size: 17px;
+    }
+    .admin-login {
+      max-width: 440px;
+      margin: 35px auto;
+    }
+    .admin-login .admin-form {
+      grid-template-columns: 1fr;
+    }
+    .admin-login .admin-form .full {
+      grid-column: auto;
+    }
+    .days-field {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 10px 0;
+    }
+    .days-field label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin: 0;
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .days-field input {
+      width: auto;
+      min-height: auto;
+    }
+    @media (max-width: 600px) {
+      .admin-page {
+        padding: 30px 4%;
+      }
+      .admin-panel {
+        padding: 18px 14px;
+      }
+      .admin-form {
+        grid-template-columns: 1fr;
+      }
+      .admin-form .full {
+        grid-column: auto;
+      }
+      .admin-topbar {
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">
+      <span class="brand-mark">+</span>
+      <span>CardioCare <strong>AI</strong></span>
+    </a>
+    <a class="header-cta" href="/">Visit website ↗</a>
+  </header>
+
+  <main class="admin-page">
+    <div class="admin-container">
+      <section id="loginSection" class="admin-panel admin-login">
+        <div class="admin-heading">
+          <span class="eyebrow">SECURE WORKSPACE</span>
+          <h1>Welcome back.</h1>
+          <p>Sign in to manage your hospital's doctors and appointment requests.</p>
+        </div>
+
+        <form id="loginForm" class="admin-form">
+          <div class="full">
+            <label for="loginEmail">Email address</label>
+            <input id="loginEmail" type="email" autocomplete="username" required placeholder="admin@hospital.com">
+          </div>
+          <div class="full">
+            <label for="loginPassword">Password</label>
+            <input id="loginPassword" type="password" autocomplete="current-password" required placeholder="Enter your password">
+          </div>
+          <button class="button button-primary full" type="submit">Sign in →</button>
+          <p id="loginMessage" class="admin-message full" role="status"></p>
+        </form>
+      </section>
+
+      <section id="dashboardSection" hidden>
+        <div class="admin-topbar">
+          <div>
+            <span class="eyebrow">HOSPITAL WORKSPACE</span>
+            <h1 style="margin:8px 0;font-family:Manrope,sans-serif">Dashboard</h1>
+            <p id="welcomeMessage" class="admin-muted"></p>
+          </div>
+          <button id="logoutButton" class="button button-secondary" type="button">Log out</button>
+        </div>
+
+        <section class="admin-panel">
+          <h2>Add a doctor</h2>
+          <form id="doctorForm" class="admin-form">
+            <div>
+              <label for="doctorName">Doctor name</label>
+              <input id="doctorName" required minlength="2" maxlength="100" placeholder="Dr. A. Sharma">
+            </div>
+            <div>
+              <label for="doctorSpecialty">Specialty</label>
+              <input id="doctorSpecialty" required minlength="2" maxlength="100" placeholder="Cardiology">
+            </div>
+            <div>
+              <label for="doctorFee">Consultation fee (₹)</label>
+              <input id="doctorFee" type="number" min="0" step="1" required placeholder="500">
+            </div>
+            <div>
+              <label for="slotMinutes">Slot duration (minutes)</label>
+              <select id="slotMinutes">
+                <option value="15">15 minutes</option>
+                <option value="20">20 minutes</option>
+                <option value="30" selected>30 minutes</option>
+                <option value="45">45 minutes</option>
+                <option value="60">60 minutes</option>
+              </select>
+            </div>
+            <div>
+              <label for="startTime">Start time</label>
+              <input id="startTime" type="time" value="09:00" required>
+            </div>
+            <div>
+              <label for="endTime">End time</label>
+              <input id="endTime" type="time" value="17:00" required>
+            </div>
+            <div class="full">
+              <label>Working days</label>
+              <div class="days-field">
+                <label><input type="checkbox" name="workingDay" value="1" checked> Mon</label>
+                <label><input type="checkbox" name="workingDay" value="2" checked> Tue</label>
+                <label><input type="checkbox" name="workingDay" value="3" checked> Wed</label>
+                <label><input type="checkbox" name="workingDay" value="4" checked> Thu</label>
+                <label><input type="checkbox" name="workingDay" value="5" checked> Fri</label>
+                <label><input type="checkbox" name="workingDay" value="6"> Sat</label>
+                <label><input type="checkbox" name="workingDay" value="0"> Sun</label>
+              </div>
+            </div>
+            <button class="button button-primary full" type="submit">Add doctor +</button>
+            <p id="doctorMessage" class="admin-message full" role="status"></p>
+          </form>
+        </section>
+
+        <section class="admin-panel">
+          <h2>Doctors</h2>
+          <div id="doctorList" class="admin-muted">Loading doctors…</div>
+        </section>
+
+        <section class="admin-panel">
+          <h2>Appointment requests</h2>
+          <p class="admin-muted">Review requests and update their status. Patients must be informed of confirmation through your hospital's process.</p>
+          <div id="appointmentList" class="admin-table-wrap admin-muted">Loading appointments…</div>
+          <p id="appointmentMessage" class="admin-message" role="status"></p>
+        </section>
+      </section>
+    </div>
+  </main>
+
+  <script>
+    const $ = (selector) => document.querySelector(selector);
+
+    async function api(url, options = {}) {
+      const response = await fetch(url, {
+        credentials: "same-origin",
+        ...options,
+        headers: {
+          ...(options.body ? { "Content-Type": "application/json" } : {}),
+          ...(options.headers || {})
+        }
+      });
+
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) {
+        throw new Error(data.error || "Something went wrong.");
+      }
+      return data;
+    }
+
+    function escapeHTML(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (c) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      })[c]);
+    }
+
+    function message(id, text, error = false) {
+      const element = $(id);
+      element.textContent = text;
+      element.style.color = error ? "#b42318" : "";
+    }
+
+    function showDashboard(user) {
+      $("#loginSection").hidden = true;
+      $("#dashboardSection").hidden = false;
+      $("#welcomeMessage").textContent =
+        `Signed in as ${user.name} (${user.email})`;
+    }
+
+    function showLogin() {
+      $("#loginSection").hidden = false;
+      $("#dashboardSection").hidden = true;
+    }
+
+    async function checkSession() {
+      try {
+        const data = await api("/api/auth/me");
+        if (data.user.role !== "hospital_admin") {
+          showLogin();
+          message("#loginMessage",
+            "This dashboard is for hospital admins. Platform-owner tools are separate.",
+            true);
+          return;
+        }
+
+        showDashboard(data.user);
+        await refreshDashboard();
+      } catch {
+        showLogin();
+      }
+    }
+
+    $("#loginForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      message("#loginMessage", "Signing in…");
+
+      try {
+        const data = await api("/api/auth/login", {
+          method: "POST",
+          body: JSON.stringify({
+            email: $("#loginEmail").value.trim(),
+            password: $("#loginPassword").value
+          })
+        });
+
+        if (data.user.role !== "hospital_admin") {
+          await api("/api/auth/logout", { method: "POST" });
+          throw new Error("This page is for hospital admins only.");
+        }
+
+        showDashboard(data.user);
+        await refreshDashboard();
+      } catch (error) {
+        message("#loginMessage", error.message, true);
+      }
+    });
+
+    $("#logoutButton").addEventListener("click", async () => {
+      try {
+        await api("/api/auth/logout", { method: "POST" });
+      } finally {
+        showLogin();
+      }
+    });
+
+    async function refreshDashboard() {
+      await Promise.all([loadDoctors(), loadAppointments()]);
+    }
+
+    async function loadDoctors() {
+      const target = $("#doctorList");
+      target.textContent = "Loading doctors…";
+
+      try {
+        const data = await api("/api/admin/doctors");
+        const doctors = data.doctors || [];
+
+        if (!doctors.length) {
+          target.textContent = "No doctors added yet.";
+          return;
+        }
+
+        target.innerHTML = `
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead><tr>
+                <th>Name</th><th>Specialty</th><th>Fee</th><th>Hours</th><th>Days</th>
+              </tr></thead>
+              <tbody>
+                ${doctors.map((doctor) => `
+                  <tr>
+                    <td>${escapeHTML(doctor.name)}</td>
+                    <td>${escapeHTML(doctor.specialty)}</td>
+                    <td>₹${escapeHTML(doctor.fee)}</td>
+                    <td>${escapeHTML(doctor.startTime)}–${escapeHTML(doctor.endTime)}</td>
+                    <td>${(doctor.days || []).map(Number).sort().map(day =>
+                      ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][day]
+                    ).join(", ")}</td>
+                  </tr>
+                `).join("")}
+              </tbody>
+            </table>
+          </div>`;
+      } catch (error) {
+        target.textContent = error.message;
+      }
+    }
+
+    $("#doctorForm").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      message("#doctorMessage", "Adding doctor…");
+
+      const days = [...document.querySelectorAll(
+        'input[name="workingDay"]:checked'
+      )].map((element) => Number(element.value));
+
+      if (!days.length) {
+        message("#doctorMessage", "Select at least one working day.", true);
+        return;
+      }
+
+      try {
+        await api("/api/admin/doctors", {
+          method: "POST",
+          body: JSON.stringify({
+            name: $("#doctorName").value.trim(),
+            specialty: $("#doctorSpecialty").value.trim(),
+            fee: Number($("#doctorFee").value),
+            startTime: $("#startTime").value,
+            endTime: $("#endTime").value,
+            slotMinutes: Number($("#slotMinutes").value),
+            days
+          })
+        });
+
+        message("#doctorMessage", "Doctor added successfully.");
+        $("#doctorForm").reset();
+        $("#slotMinutes").value = "30";
+        $("#startTime").value = "09:00";
+        $("#endTime").value = "17:00";
+
+        document.querySelectorAll('input[name="workingDay"]').forEach((input) => {
+          input.checked = ["1", "2", "3", "4", "5"].includes(input.value);
+        });
+
+        await loadDoctors();
+      } catch (error) {
+        message("#doctorMessage", error.message, true);
+      }
+    });
+
+    async function loadAppointments() {
+      const target = $("#appointmentList");
+      target.textContent = "Loading appointments…";
+
+      try {
+        const data = await api("/api/admin/appointments");
+        const appointments = data.appointments || [];
+
+        if (!appointments.length) {
+          target.textContent = "No appointment requests yet.";
+          return;
+        }
+
+        target.innerHTML = `
+          <table class="admin-table">
+            <thead><tr>
+              <th>Patient</th><th>Contact</th><th>Doctor</th>
+              <th>Date</th><th>Time</th><th>Status</th>
+            </tr></thead>
+            <tbody>
+              ${appointments.map((appointment) => `
+                <tr>
+                  <td>${escapeHTML(appointment.patientName)}</td>
+                  <td>${escapeHTML(appointment.patientPhone)}</td>
+                  <td>${escapeHTML(appointment.doctorId?.name || "Doctor unavailable")}</td>
+                  <td>${escapeHTML(appointment.date)}</td>
+                  <td>${escapeHTML(appointment.time)}</td>
+                  <td>
+                    <select class="appointment-status"
+                      data-id="${escapeHTML(appointment._id)}"
+                      aria-label="Update appointment status">
+                      ${["pending", "confirmed", "cancelled", "completed"].map(status => `
+                        <option value="${status}" ${appointment.status === status ? "selected" : ""}>
+                          ${status}
+                        </option>
+                      `).join("")}
+                    </select>
+                  </td>
+                </tr>
+              `).join("")}
+            </tbody>
+          </table>`;
+
+        target.querySelectorAll(".appointment-status").forEach((select) => {
+          select.addEventListener("change", async () => {
+            select.disabled = true;
+
+            try {
+              await api(`/api/admin/appointments/${encodeURIComponent(select.dataset.id)}`, {
+                method: "PATCH",
+                body: JSON.stringify({ status: select.value })
+              });
+
+              message("#appointmentMessage", "Appointment status updated.");
+            } catch (error) {
+              message("#appointmentMessage", error.message, true);
+              await loadAppointments();
+            } finally {
+              select.disabled = false;
+            }
+          });
+        });
+      } catch (error) {
+        target.textContent = error.message;
+      }
+    }
+
+    checkSession();
+  </script>
+</body>
+</html>
