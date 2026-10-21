@@ -1,0 +1,155 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#102b46">
+  <meta name="description" content="Find hospitals, explore doctors and request appointments with CardioCare AI.">
+  <title>CardioCare AI | Find Care, Simply</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/" aria-label="CardioCare AI home">
+      <span class="brand-mark">+</span>
+      <span>CardioCare <strong>AI</strong></span>
+    </a>
+
+    <nav class="nav-links">
+      <a href="#hospitals">Hospitals</a>
+      <a href="#appointment">Appointments</a>
+      <a href="/admin.html">Admin</a>
+    </nav>
+
+    <a class="header-cta" href="#appointment">Find a Doctor <span>↗</span></a>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow"><span class="status-dot"></span> A simpler way to find care</span>
+        <h1>Healthcare that puts <span>you first.</span></h1>
+        <p>
+          Discover hospitals, explore doctors and request an appointment
+          with a smoother, more welcoming healthcare experience.
+        </p>
+
+        <div class="hero-actions">
+          <a class="button button-primary" href="#hospitals">Explore Hospitals <span>→</span></a>
+          <button class="button button-secondary" id="voiceButton" type="button">
+            <span aria-hidden="true">◖</span> Talk to AI Assistant
+          </button>
+        </div>
+
+        <p class="hero-note">Clear information. Convenient appointment requests.</p>
+      </div>
+
+      <div class="hero-visual">
+        <img
+          src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=85"
+          alt="Healthcare professional speaking with a patient"
+        >
+        <div class="floating-card">
+          <span class="floating-icon">✚</span>
+          <div>
+            <strong>Care, made simpler</strong>
+            <p>Explore healthcare options in one place.</p>
+          </div>
+        </div>
+        <div class="visual-badge"><span>●</span> Your care journey starts here</div>
+      </div>
+    </section>
+
+    <section class="trust-strip" aria-label="Platform features">
+      <div><span>01</span><p><strong>Find hospitals</strong><small>Explore listed facilities</small></p></div>
+      <div><span>02</span><p><strong>Discover doctors</strong><small>View specialties and fees</small></p></div>
+      <div><span>03</span><p><strong>Request appointments</strong><small>Choose a suitable slot</small></p></div>
+    </section>
+
+    <section class="section" id="hospitals">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">YOUR HEALTHCARE OPTIONS</span>
+          <h2>Find the right care.</h2>
+          <p>Choose a hospital to explore its available doctors.</p>
+        </div>
+      </div>
+
+      <div id="hospitalList" class="hospital-grid" aria-live="polite">
+        <div class="loading-card">Loading hospitals…</div>
+      </div>
+    </section>
+
+    <section class="section appointment-section" id="appointment">
+      <div class="appointment-intro">
+        <span class="eyebrow">APPOINTMENT REQUEST</span>
+        <h2>Let's plan your visit.</h2>
+        <p>Select a hospital, doctor, date and available time to submit an appointment request.</p>
+        <div class="appointment-tip">
+          <span>✦</span>
+          <p>Submitting this form sends a request. Your appointment is not confirmed until the hospital confirms it.</p>
+        </div>
+      </div>
+
+      <form id="appointmentForm" class="appointment-form">
+        <label for="hospitalSelect">Hospital</label>
+        <select id="hospitalSelect" name="hospitalSlug" required>
+          <option value="">Choose a hospital</option>
+        </select>
+
+        <label for="doctorSelect">Doctor</label>
+        <select id="doctorSelect" name="doctorId" required disabled>
+          <option value="">Choose a doctor</option>
+        </select>
+
+        <div class="form-row">
+          <div>
+            <label for="visitDate">Appointment date</label>
+            <input id="visitDate" name="date" type="date" required>
+          </div>
+          <div>
+            <label for="timeSelect">Available time</label>
+            <select id="timeSelect" name="time" required disabled>
+              <option value="">Choose a time</option>
+            </select>
+          </div>
+        </div>
+
+        <label for="patientName">Patient name</label>
+        <input id="patientName" name="patientName" type="text" minlength="2" maxlength="100" autocomplete="name" placeholder="Enter patient name" required>
+
+        <label for="patientPhone">Contact number</label>
+        <input id="patientPhone" name="patientPhone" type="tel" minlength="7" maxlength="20" autocomplete="tel" placeholder="Enter contact number" required>
+
+        <button class="button button-primary submit-button" type="submit">Request Appointment <span>→</span></button>
+        <p id="appointmentMessage" class="form-message" role="status" aria-live="polite"></p>
+        <p class="privacy-note">Only provide the information needed to submit your request.</p>
+      </form>
+    </section>
+
+    <section class="voice-section" id="voiceAssistant">
+      <div class="voice-symbol" aria-hidden="true">✳</div>
+      <div class="voice-copy">
+        <span class="eyebrow">CARDIOCARE AI ASSISTANT</span>
+        <h2>Questions about your visit?</h2>
+        <p>Start the voice assistant for general platform and appointment guidance. It does not diagnose medical conditions.</p>
+        <p id="voiceStatus" class="form-message" role="status" aria-live="polite">Voice assistant is ready when configured.</p>
+      </div>
+      <button class="button button-light" id="voiceStart" type="button">Start voice assistant ↗</button>
+      <button class="button button-secondary" id="voiceStop" type="button" hidden>End conversation</button>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <a class="brand footer-brand" href="/">
+      <span class="brand-mark">+</span>
+      <span>CardioCare <strong>AI</strong></span>
+    </a>
+    <p>Healthcare information and appointment requests, made simpler.</p>
+    <small>For emergencies, contact local emergency services. This platform does not replace professional medical advice.</small>
+  </footer>
+
+  <script src="/app.js" defer></script>
+</body>
+</html>
